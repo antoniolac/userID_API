@@ -1,31 +1,46 @@
 document.addEventListener("DOMContentLoaded", function() {
     let url = "https://randomuser.me/api/";
 
-    // Select DOM elements
+    //button
+    let btn = document.querySelector("#btn");
+    btn.addEventListener("click", handleClick);
+    
+    //DOM elements
+    let e = document.querySelector("#errorCase");
     let img = document.querySelector("#img");
     let generalInfo = document.querySelector("#generalInfo");
     let liveInfo = document.querySelector("#liveInfo");
     let email = document.querySelector("#email");
     let cell = document.querySelector("#cell");
-    let btn = document.querySelector("#btn");
+
+    //cards with all info
     let userCard = document.querySelector("#userCard");
 
-    // Button click event
-    btn.addEventListener("click", function(event) {
+    //event
+    function handleClick(event) {
         event.preventDefault();
 
         fetch(url)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 let user = data.results[0];
 
-                // Show the user card
+                //show the hidden card
                 userCard.classList.remove("hidden");
 
-                // Update image
+                setTimeout(() => {
+                    userCard.classList.add("show");
+                }, 200);
+
+                //image
                 img.src = user.picture.large;
 
-                // Update general info
+                //general info
                 generalInfo.innerHTML = 
                     `First Name: ${user.name.first} <br>
                      Last Name: ${user.name.last} <br>
@@ -33,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
                      Date of Birth: ${user.dob.date.substring(0, 10)} <br>
                      Gender: ${user.gender}`;
 
-                // Update address information
+                //living info
                 liveInfo.innerHTML = 
                     `Nationality: ${user.nat} <br>
                      Residence: ${user.location.street.number} ${user.location.street.name}, ${user.location.city} <br>
@@ -41,12 +56,20 @@ document.addEventListener("DOMContentLoaded", function() {
                      Country: ${user.location.country} <br>
                      Postcode: ${user.location.postcode}`;
 
-                // Update email and phone number
+                //contact info
                 email.innerHTML = `Email: ${user.email}`;
                 cell.innerHTML = `Cell phone: ${user.cell}`;
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+                //sometimes the fetching doesn't happen becuse the API doesn't work
+                //in that case show this message to the user
+                e.innerHTML = "Something went wrong, try later";
             });
-    });
+    }
 });
+
+
 
 
 
