@@ -1,77 +1,66 @@
-document.addEventListener("DOMContentLoaded", function() {
-    let url = "https://randomuser.me/api/";
+const url = "https://randomuser.me/api/";
 
-    //button
-    let btn = document.querySelector("#btn");
-    btn.addEventListener("click", handleClick);
-    
-    //DOM elements
-    let e = document.querySelector("#errorCase");
-    let img = document.querySelector("#img");
-    let generalInfo = document.querySelector("#generalInfo");
-    let liveInfo = document.querySelector("#liveInfo");
-    let email = document.querySelector("#email");
-    let cell = document.querySelector("#cell");
+//button
+const btn = document.querySelector("#btn");
 
-    //cards with all info
-    let userCard = document.querySelector("#userCard");
+const e = document.querySelector("#errorCase");
+const img = document.querySelector("#img");
+const generalInfo = document.querySelector("#generalInfo");
+const liveInfo = document.querySelector("#liveInfo");
+const email = document.querySelector("#email");
+const cell = document.querySelector("#cell");
 
-    //event
-    function handleClick(event) {
-        event.preventDefault();
+// Cards with all info
+const userCard = document.querySelector("#userCard");
 
-        fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                let user = data.results[0];
+function handleClick(event) {
+    event.preventDefault();
 
-                //show the hidden card
-                userCard.classList.remove("hidden");
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const user = data.results[0];
 
-                setTimeout(() => {
-                    userCard.classList.add("show");
-                }, 200);
+            //show the hidden card
+            userCard.style.display = "block";  
 
-                //image
-                img.src = user.picture.large;
+            userCard.classList.add("show"); 
 
-                //general info
-                generalInfo.innerHTML = 
-                    `First Name: ${user.name.first} <br>
-                     Last Name: ${user.name.last} <br>
-                     Age: ${user.dob.age} <br>
-                     Date of Birth: ${user.dob.date.substring(0, 10)} <br>
-                     Gender: ${user.gender}`;
+            //image
+            img.src = user.picture.large;
 
-                //living info
-                liveInfo.innerHTML = 
-                    `Nationality: ${user.nat} <br>
-                     Residence: ${user.location.street.number} ${user.location.street.name}, ${user.location.city} <br>
-                     State: ${user.location.state} <br>
-                     Country: ${user.location.country} <br>
-                     Postcode: ${user.location.postcode}`;
+            //general info
+            generalInfo.innerHTML = 
+                `First Name: ${user.name.first} <br>
+                 Last Name: ${user.name.last} <br>
+                 Age: ${user.dob.age} <br>
+                 Date of Birth: ${user.dob.date.substring(0, 10)} <br>
+                 Gender: ${user.gender}`;
 
-                //contact info
-                email.innerHTML = `Email: ${user.email}`;
-                cell.innerHTML = `Cell phone: ${user.cell}`;
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-                //sometimes the fetching doesn't happen becuse the API doesn't work
-                //in that case show this message to the user
-                e.innerHTML = "Something went wrong, try later";
-            });
-    }
-});
+            //living info
+            liveInfo.innerHTML = 
+                `Nationality: ${user.nat} <br>
+                 Residence: ${user.location.street.number} ${user.location.street.name}, ${user.location.city} <br>
+                 State: ${user.location.state} <br>
+                 Country: ${user.location.country} <br>
+                 Postcode: ${user.location.postcode}`;
 
+            //contact info
+            email.innerHTML = `Email: ${user.email}`;
+            cell.innerHTML = `Cell phone: ${user.cell}`;
+        })
+        .catch(error => {
+            console.error("Error fetching data:", error);
+            //sometimes the fetching doesn't happen becuse the API doesn't work
+            //in that case show this message to the user
+            e.innerHTML = "Something went wrong, try later";
+        });
+}
 
-
-
-
-
-
+// Handling click event
+btn.addEventListener("click", handleClick);
